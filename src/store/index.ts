@@ -10,3 +10,5 @@ export function configureStore() {
   );
   return store;
 }
+
+export type RootState = ReturnType<ReturnType<typeof createRootReducer>>;

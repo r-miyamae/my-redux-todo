@@ -1,6 +1,19 @@
 import React from "react";
+import { increment, decrement, add } from "../../store/modules/couter/actions";
 
-export const CounterView = ({ count, increment, decrement, add }) => {
+type Props = {
+  count: number;
+  increment: typeof increment;
+  decrement: typeof decrement;
+  add: typeof add;
+};
+
+export const CounterView: React.FunctionComponent<Props> = ({
+  count,
+  increment,
+  decrement,
+  add,
+}) => {
   const [num, setNum] = React.useState(0);
   return (
     <div>

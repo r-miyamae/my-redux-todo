@@ -2,7 +2,16 @@ import {
   GET_EMPLOYEE_START,
   GET_EMPLOYEE_SUCCESS,
   GET_EMPLOYEE_FAILED,
+  EmployeeActions,
 } from "../actions/index";
+import { Domain } from "../../../../client/type";
+
+type EmployeeState = {
+  requesting: boolean;
+  success: boolean;
+  failed: boolean;
+  employees: Domain.Employee[];
+};
 
 const initialState = {
   requesting: false,
@@ -11,7 +20,10 @@ const initialState = {
   employees: [],
 };
 
-export function employeeReducer(state = initialState, action) {
+export function employeeReducer(
+  state: EmployeeState = initialState,
+  action: EmployeeActions
+) {
   switch (action.type) {
     case GET_EMPLOYEE_START:
       return { ...state, requesting: true };

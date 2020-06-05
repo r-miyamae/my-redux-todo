@@ -5,7 +5,7 @@ import { EmployeeView } from "./pages/EmployeeView";
 import "./App.css";
 import { configureStore } from "./store";
 
-function App() {
+const App: React.FunctionComponent = () => {
   const store = configureStore();
   return (
     <Provider store={store}>
@@ -13,6 +13,6 @@ function App() {
       <EmployeeView />
     </Provider>
   );
-}
+};
 
 export default App;
