@@ -1,50 +1,32 @@
-import { getEmployees } from "../../../../client";
-import { Action } from "redux";
-import { Domain } from "../../../../client/type";
+import { getEmployees as fetchEmployees } from "../../../../client";
 import { ThunkAction } from "../../../type";
+import { Response } from "../../../../client/type";
+import actionCreatorFactory from "typescript-fsa";
 
-export const GET_EMPLOYEE_START = "GET_EMPLOYEE_START";
-export const GET_EMPLOYEE_SUCCESS = "GET_EMPLOYEE_SUCCESS";
-export const GET_EMPLOYEE_FAILED = "GET_EMPLOYEE_FAILED";
+type GetEmployeesParams = void;
+type GetEmployeesSuccess = Response.GetEmployees;
+type GetEmployeesFailed = Error;
 
-interface GetEmployeesStart extends Action {
-  type: typeof GET_EMPLOYEE_START;
-}
-const getEmployeesStart = (): GetEmployeesStart => ({
-  type: GET_EMPLOYEE_START,
-});
+const actionCreator = actionCreatorFactory("employee");
 
-interface GetEmployeesSuccess extends Action {
-  type: typeof GET_EMPLOYEE_SUCCESS;
-  payload: Domain.Employee[];
-}
-const getEmployeesSuccess = (
-  payload: Domain.Employee[]
-): GetEmployeesSuccess => ({
-  type: GET_EMPLOYEE_SUCCESS,
-  payload,
-});
+export const getEmployeesAction = actionCreator.async<
+  GetEmployeesParams,
+  GetEmployeesSuccess,
+  GetEmployeesFailed
+>("GET_EMPLOYEES");
 
-interface GetEmployeesFailed extends Action {
-  type: typeof GET_EMPLOYEE_FAILED;
-}
-const getEmployeesFaild = (): GetEmployeesFailed => ({
-  type: GET_EMPLOYEE_FAILED,
-});
-
-export function getEmployeeAction(): ThunkAction<void, any> {
+export function getEmployees(): ThunkAction<void, any> {
   return async (dispatch) => {
-    dispatch(getEmployeesStart());
+    dispatch(getEmployeesAction.started());
     try {
-      const res = await getEmployees();
-      dispatch(getEmployeesSuccess(res.data.data));
+      const res = await fetchEmployees();
+      dispatch(
+        getEmployeesAction.done({
+          result: res.data.data,
+        })
+      );
     } catch (e) {
-      dispatch(getEmployeesFaild());
+      dispatch(getEmployeesAction.failed(e));
     }
   };
 }
-
-export type EmployeeActions =
-  | GetEmployeesStart
-  | GetEmployeesSuccess
-  | GetEmployeesFailed;

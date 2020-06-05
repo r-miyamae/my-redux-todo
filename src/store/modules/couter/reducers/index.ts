@@ -1,4 +1,5 @@
-import { INCREMENT, DECREMENT, ADD, CounterActions } from "../actions";
+import { increment, decrement, add } from "../actions";
+import { reducerWithInitialState } from "typescript-fsa-reducers";
 
 type CounterState = {
   count: number;
@@ -8,27 +9,16 @@ const initialState: CounterState = {
   count: 0,
 };
 
-export function counterReducer(
-  state: CounterState = initialState,
-  action: CounterActions
-) {
-  switch (action.type) {
-    case INCREMENT:
-      return {
-        ...state,
-        count: ++state.count,
-      };
-    case DECREMENT:
-      return {
-        ...state,
-        count: --state.count,
-      };
-    case ADD:
-      return {
-        ...state,
-        count: state.count + action.payload,
-      };
-    default:
-      return state;
-  }
-}
+export const counterReducer = reducerWithInitialState(initialState)
+  .case(increment, (state) => ({
+    ...state,
+    count: state.count + 1,
+  }))
+  .case(decrement, (state) => ({
+    ...state,
+    count: state.count - 1,
+  }))
+  .case(add, (state, payload) => ({
+    ...state,
+    count: state.count + payload,
+  }));

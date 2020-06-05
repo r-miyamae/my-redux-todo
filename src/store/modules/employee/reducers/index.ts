@@ -1,37 +1,32 @@
-import {
-  GET_EMPLOYEE_START,
-  GET_EMPLOYEE_SUCCESS,
-  GET_EMPLOYEE_FAILED,
-  EmployeeActions,
-} from "../actions/index";
 import { Domain } from "../../../../client/type";
+import { reducerWithInitialState } from "typescript-fsa-reducers";
+import { getEmployeesAction } from "../actions/index";
 
-type EmployeeState = {
+export type EmployeeState = {
   requesting: boolean;
   success: boolean;
   failed: boolean;
   employees: Domain.Employee[];
 };
 
-const initialState = {
+const initialState: EmployeeState = {
   requesting: false,
   success: false,
   failed: false,
   employees: [],
 };
 
-export function employeeReducer(
-  state: EmployeeState = initialState,
-  action: EmployeeActions
-) {
-  switch (action.type) {
-    case GET_EMPLOYEE_START:
-      return { ...state, requesting: true };
-    case GET_EMPLOYEE_SUCCESS:
-      return { ...state, requesting: false, employees: action.payload };
-    case GET_EMPLOYEE_FAILED:
-      return { ...state, requesting: false, failed: true };
-    default:
-      return state;
-  }
-}
+export const employeeReducer = reducerWithInitialState(initialState)
+  .case(getEmployeesAction.started, (state) => ({
+    ...state,
+    requesting: true,
+  }))
+  .case(getEmployeesAction.done, (state, action) => ({
+    ...state,
+    requesting: false,
+    employees: action.result,
+  }))
+  .case(getEmployeesAction.failed, (state) => ({
+    ...state,
+    requesting: false,
+  }));

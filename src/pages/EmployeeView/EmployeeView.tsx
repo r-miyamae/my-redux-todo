@@ -1,18 +1,17 @@
 import React from "react";
-import { getEmployeeAction } from "../../store/modules/employee/actions";
-import { RootState } from "../../store";
+import { EmployeeState } from "../../store/modules/employee/reducers";
 
 type Props = {
-  getEmployeesAction: typeof getEmployeeAction;
-  employee: RootState["employee"]; // 雑実装
+  getEmployees: () => void;
+  employee: EmployeeState;
 };
 
 export const Employees: React.FunctionComponent<Props> = ({
-  getEmployeesAction,
+  getEmployees,
   employee,
 }) => {
   React.useEffect(() => {
-    getEmployeesAction();
+    getEmployees();
   }, []);
   if (employee.requesting) {
     return <p>Loading...</p>;
